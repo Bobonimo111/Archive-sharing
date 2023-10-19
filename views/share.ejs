@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>share</title>
+    <style>
+        .error{
+            color: red;
+        }
+        section{
+            display: flex;
+            flex-flow: column;
+            
+        }
+        article{
+            margin: 5px 25px;
+            font-size: 20px;
+        }
+        h1{
+            font-size: 30px;
+        }
+        body{
+            position: relative;
+        }
+        .qrcode{
+            display: grid;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 5px;
+            background: #c6c6c6;
+            border:2px solid black;
+            border-radius: 10px;
+        }
+        .qrcode > .close{
+            text-align: center;
+            width: 100%;
+            background-color: red;
+            cursor: pointer;
+            width: 100px;
+            border-radius: 10px;
+        }
+        .qrcode > img{
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <form action="/share" method="post" enctype="multipart/form-data" >
+        <label> Escolha um arquivo para compartilhar</label><br>
+        <br>
+        <input type="file" name="data" id="">
+        <button type="submit">Enviar</button>
+    </form>
+    <hr>
+    <section>
+        <article>
+        <h1>Arquivos compartilhados</h1>
+        <table border="1px" class="table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Opções</th>
+                </tr>
+            </thead>
+            <% files.forEach(file => { %>
+                <tr>
+                    <td>None</td>
+                    <td><%- file.name %></td>
+                    <td><%- file.type %></td>
+                    <td>
+                        <form action="/download" method="post">
+                            <input style="display: none;" type="text" name="path" id="" value="/tmp/uploads/<%-file.name%>">
+                            <button type="submit">Baixar</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>    
+        </table>
+    </article> 
+    <div class="qrcode">
+        <div class="close"> X </div>
+        <img src="/tmp/qr_code.svg" alt="">
+    </div>
+</body>
+</html>
+<script>
+    const qrcode = document.querySelector(".qrcode");
+    const close = qrcode.querySelector(".close");
+    const image = qrcode.querySelector("img")
+    let isOpen = true;
+    // close.addEventListener('click', function(){
+    //    closeOpen();
+    // })
+    qrcode.addEventListener('click', closeOpen)
+    window.addEventListener('load', closeOpen)
+    function closeOpen(){
+        if(isOpen){
+            image.style.height = "0";
+            image.style.transition = "1s";
+            close.textContent = "O";
+            isOpen = !isOpen;
+        }else{
+            image.style.height = "100px";
+            close.textContent = "X";
+            isOpen = !isOpen;
+        }
+    }
+</script>
