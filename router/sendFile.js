@@ -3,8 +3,9 @@ const Router = express.Router();
 const multer = require("multer");
 const fs = require("fs");
 const qrCode = require("../script/QrGenerator");
-const os = require("os");
-const networkInfo = os.networkInterfaces();
+const config = require("../config")
+//const os = require("os");
+//const networkInfo = os.networkInterfaces();
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -32,8 +33,8 @@ Router.get("/share", (req, res) => {
     //Procura os nomes dos dos uploads 
     fs.readdir("./public/tmp/uploads", (err, files) => {
         //pega o ip local
-        let local_ip = networkInfo["Wi-Fi"][1]["address"];
-        const qr = new qrCode("svg", local_ip + ":" + 8080);
+        //let local_ip = networkInfo["Wi-Fi"][1]["address"];
+        const qr = new qrCode("svg", config.ip + ":" + 8080);
         qr.setPath("./public/tmp")
         qr.Create()
         //essa função delete o qr code 5s após ele ser criado
